@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { Op, Pet, Category, Photo, Status } = require('../db.js');
+const { Op, Pet, Category, Photo, Status, Tag } = require('../db.js');
 
 const router = Router();
 
@@ -32,7 +32,8 @@ router.post("/", async(req,res,next)=>{
                 })
                 .then(()=>{
                     if(tags){
-
+                        Promise.all(tags.map(e => Tag.findOrCreate({where:{name:e.name}})))
+                        .then(res => pet[0].addTags(res.map(e=>e[0])))
                     }
                 })
                 .then(()=>res.send(pet))
@@ -48,4 +49,16 @@ router.post("/", async(req,res,next)=>{
 router.get("/findByStatus",(req,res)=>{
     const {status} = req.query;
     status?res.send(status):res.send("no")
+})
+
+router.get("/:id",async (req,res, next)=>{
+    const {id} = req.params;
+    console.log(id);
+    try {
+        let pet = await Pet.findOne({where:{id}})
+        if(pet) return res.send(pet)
+        res.status(404).send({msg:"Not found"})
+    } catch (error) {
+        next(error)
+    }
 })
