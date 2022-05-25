@@ -53,7 +53,7 @@ router.get("/findByStatus",(req,res)=>{
 
 router.get("/:id",async (req,res, next)=>{
     const {id} = req.params;
-    console.log(id);
+
     try {
         let pet = await Pet.findOne({where:{id}})
         if(pet) return res.send(pet)
