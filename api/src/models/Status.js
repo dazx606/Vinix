@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
 
-  sequelize.define('pet', {
+  sequelize.define('status', {
     status: {
       type: DataTypes.STRING,
       primaryKey: true,

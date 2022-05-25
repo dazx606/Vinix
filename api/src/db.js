@@ -7,35 +7,36 @@ const {
 } = process.env;
 
 //----------------------------------------HEROKU CONECTION------------------------------
-let sequelize;
-if(process.env.DATABASE_URL){
-  sequelize = new Sequelize(process.env.DATABASE_URL, {
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false
-      }
-    }
-  }
-);
+// let sequelize;
+// if(process.env.DATABASE_URL){
+//   sequelize = new Sequelize(process.env.DATABASE_URL, {
+//     dialectOptions: {
+//       ssl: {
+//         require: true,
+//         rejectUnauthorized: false
+//       }
+//     }
+//   }
+// );
 
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
-} else {
-  //-------------------------------------LOCAL----------------------------------------------------
+// sequelize
+//   .authenticate()
+//   .then(() => {
+//     console.log('Connection has been established successfully.');
+//   })
+//   .catch(err => {
+//     console.error('Unable to connect to the database:', err);
+//   });
+// } else {
+//   //-------------------------------------LOCAL----------------------------------------------------
 
-  sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`, {
-  logging: false, // set to console.log to see the raw SQL queries
-  native: false, // lets Sequelize know we can use pg-native for ~30% more speed
-});
-}
+//   sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`, {
+//   logging: false, // set to console.log to see the raw SQL queries
+//   native: false, // lets Sequelize know we can use pg-native for ~30% more speed
+// });
+// }
 
+const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, { dialect: 'mysql' });
 
 
 const basename = path.basename(__filename);
@@ -58,10 +59,25 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
-const {} = sequelize.models;
+const {Category, Pet, Photo, Status, Tag} = sequelize.models;
 
 // Aca vendrian las relaciones
 //----------------------------------------------------------------------------------------
+
+Category.hasMany(Pet);
+Pet.belongsTo(Category);
+
+Pet.belongsToMany(Photo,{through: 'pet_photos'});
+Photo.belongsToMany(Pet,{through: 'pet_photos'});
+
+Pet.belongsToMany(Tag,{through: 'pet_tags'});
+Tag.belongsToMany(Pet,{through: 'pet_tags'});
+
+Status.hasMany(Pet);
+Pet.belongsTo(Status);
+
+
+
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');

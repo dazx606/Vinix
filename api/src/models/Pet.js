@@ -4,17 +4,14 @@ module.exports = (sequelize) => {
 
   sequelize.define('pet', {
     id: {
-      type: DataTypes.STRING(6),
+      type: DataTypes.STRING,      
       primaryKey: true,
     },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    photoUrl: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+
 
   });
 };
