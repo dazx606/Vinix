@@ -10,8 +10,8 @@ router.post("/", async(req,res,next)=>{
     const {id, category, name, photoUrls, tags, status} = req.body;
     const EnumStatus = ["available","pending","sold"]
     try {
-        if(!name || !photoUrls){res.status(400).send({msg:"Invalid Input"})}
-        else if(status && !EnumStatus.includes(status)) return res.status(400).send({msg:"Error, wrong status"})
+        if(!name || !photoUrls){res.status(405).send({msg:"Invalid Input"})}
+        else if(status && !EnumStatus.includes(status)) return res.status(405).send({msg:"Error, wrong status"})
         else{
             let pet = await Pet.findOrCreate({where:{id}, defaults:{name}});
             if(pet[1]===false) return res.status(400).send({msg:"Pet already exist"})
@@ -43,13 +43,20 @@ router.post("/", async(req,res,next)=>{
     } catch (error) {
         next(error)
     }
-})
+});
 
 
-router.get("/findByStatus",(req,res)=>{
+router.get("/findByStatus",async (req,res,next)=>{
     const {status} = req.query;
-    status?res.send(status):res.send("no")
-})
+    const EnumStatus = ["available","pending","sold"]
+    try {
+        if(!EnumStatus.includes(status)) return res.status(405).send({msg:"Error, wrong status"})
+        let petStatus = await Status.findOne({where:{status}})
+        res.send(await petStatus.getPets())
+    } catch (error) {
+        next(error)
+    }
+});
 
 router.get("/:id",async (req,res, next)=>{
     const {id} = req.params;
@@ -76,4 +83,4 @@ router.delete("/:id",async (req,res, next)=>{
     } catch (error) {
         next(error)
     }
-})
+});
