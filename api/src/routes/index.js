@@ -61,4 +61,19 @@ router.get("/:id",async (req,res, next)=>{
     } catch (error) {
         next(error)
     }
+});
+
+router.delete("/:id",async (req,res, next)=>{
+    const {id} = req.params;
+
+    try {
+        let pet = await Pet.findOne({where:{id}})
+        if(pet) {
+            Pet.destroy({where:{id}})
+            res.send({msg:"Deleted"})
+        }
+        else res.status(404).send({msg:"Not found"})
+    } catch (error) {
+        next(error)
+    }
 })
