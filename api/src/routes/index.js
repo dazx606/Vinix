@@ -62,7 +62,7 @@ router.patch("/", async(req,res,next)=>{
             let petStatus = await Status.findOne({where:{status}});
             pet.setStatus(petStatus);
         }
-        res.send(pet)
+        res.send({msg:"Pet edited"})
 
     } catch (error) {
         next(error)

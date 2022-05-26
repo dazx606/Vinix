@@ -1,66 +1,42 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import AddScreen from './components/AddScreen';
+import PetsScreen from './components/PetsScreen';
+import ProfileScreen from './components/ProfileScreen';
 
-function FeedScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Feed!</Text>
-    </View>
-  );
-}
-
-function NotificationsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Notifications!</Text>
-    </View>
-  );
-}
-
-function ProfileScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Profile!</Text>
-    </View>
-  );
-}
 
 const Tab = createMaterialTopTabNavigator();
 
-function MyTabs() {
+
+export default function App() {
   return (
-    <Tab.Navigator
+    <NavigationContainer>
+      <Tab.Navigator
       initialRouteName="Feed"
       screenOptions={{
         tabBarActiveTintColor: '#e91e63',
         tabBarLabelStyle: { fontSize: 12 },
         tabBarStyle: { backgroundColor: 'powderblue' },
+        
       }}
     >
       <Tab.Screen
         name="Feed"
-        component={FeedScreen}
-        options={{ tabBarLabel: 'Home' }}
+        component={PetsScreen}
+        options={{ tabBarLabel: 'Pets' }}
       />
       <Tab.Screen
         name="Notifications"
-        component={NotificationsScreen}
-        options={{ tabBarLabel: 'Updates' }}
+        component={AddScreen}
+        options={{ tabBarLabel: 'Add pet' }}
       />
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{ tabBarLabel: 'Profile' }}
+        options={{ tabBarLabel: 'Find pet' }}
       />
     </Tab.Navigator>
-  );
-}
-export default function App() {
-  return (
-    <NavigationContainer>
-      <MyTabs />
     </NavigationContainer>
   );
 }
