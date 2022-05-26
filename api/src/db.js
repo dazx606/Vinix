@@ -36,7 +36,9 @@ const {
 // });
 // }
 
-const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, { dialect: 'mysql' });
+const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, { dialect: 'mysql', define: {
+  timestamps: false
+} });
 
 
 const basename = path.basename(__filename);

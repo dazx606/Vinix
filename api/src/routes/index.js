@@ -45,6 +45,30 @@ router.post("/", async(req,res,next)=>{
     }
 });
 
+router.patch("/", async(req,res,next)=>{
+    const {id, name, category, status} = req.body;
+    const EnumStatus = ["available","pending","sold"]
+    try {
+        if(!id || typeof(id)!=="number") return res.status(400).send({msg:"Invalid ID supplied"})
+        let pet = await Pet.findOne({where:{id:id}})
+        if(!pet) return res.status(404).send({msg:"Pet not found"})
+        if(status && !EnumStatus.includes(status)) return res.status(400).send({msg:"Invalid STATUS supplied"})
+        Pet.update({name},{where:{id}});
+        if(category){
+            let petCategory = await Category.findOrCreate({where:{name:category.name}});
+            pet.setCategory(petCategory[0]);
+        }
+        if(status){
+            let petStatus = await Status.findOne({where:{status}});
+            pet.setStatus(petStatus);
+        }
+        res.send(pet)
+
+    } catch (error) {
+        next(error)
+    }
+})
+
 
 router.get("/findByStatus",async (req,res,next)=>{
     const {status} = req.query;
