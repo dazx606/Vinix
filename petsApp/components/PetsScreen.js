@@ -15,13 +15,18 @@ export default function PetsScreen() {
       if (res) setPets(res)
       else { alert("Not Found") }
     })
-
-    return () => {
-      navigation.setParams({ screen: undefined })
-    }
  
 
-  }, [navigation])
+  }, [])
+  function useResetScreenOnBlur() {
+    const navigation = useNavigation()
+  
+    useEffect(() => {
+      return () => {
+        navigation.setParams({ screen: undefined })
+      }
+    }, [navigation])
+  }
 
 
 
