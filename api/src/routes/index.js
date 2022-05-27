@@ -36,7 +36,7 @@ router.post("/", async(req,res,next)=>{
                         .then(res => pet[0].addTags(res.map(e=>e[0])))
                     }
                 })
-                .then(()=>res.send(pet))
+                .then(()=>res.send({msg:"done",pet}))
                 .catch((error)=>next(error))
            
         }
