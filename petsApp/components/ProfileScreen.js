@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { View, Text, TextInput, Button, Image, StyleSheet } from "react-native";
-import { Card, Title, Paragraph } from "react-native-paper";
+
 import { findOne } from "../services/service";
+import CardPet from "./CardPet";
 
 export default function ProfileScreen() {
 
@@ -11,9 +12,12 @@ export default function ProfileScreen() {
     const handleChange = () => {
         findOne(parseInt(text))
         .then(res=>{
-            res? setPet(res):alert("Not Found");
-            
+            if(res) setPet(res)
+            else {alert("Not Found");
+            setPet({})}
         })
+
+        console.log(pet);
     }
 
 
@@ -24,18 +28,10 @@ export default function ProfileScreen() {
             <TextInput placeholder="Insert an ID" value={text} onChangeText={setText} style={{ borderWidth: 1 }}></TextInput>
             <Text>{"\n"}</Text>
             <Button onPress={handleChange} title="Search"></Button>
-            {pet?.name!=="" && <Card style={{ width: '90%', height: '50%' }}>
-               
-               <Card.Content>
-                   <Title style={{textAlign:'center' }}>Gato</Title>
-               </Card.Content>
-               <Card.Cover source={{ uri: 'https://www.zooplus.es/magazine/wp-content/uploads/2018/04/fotolia_169457098.jpg' }} />
-               
-
-           </Card>}
-            
-
-
+            {pet.pet?.name? <CardPet name={pet.pet.name} img={pet.images[0].photoUrls}
+            status={pet.pet.statusStatus ? pet.pet.statusStatus:undefined}
+            tags={pet.tags.toString().replaceAll(","," ")}
+            />:null  }
         </View>
     );
 }

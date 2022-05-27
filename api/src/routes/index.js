@@ -82,12 +82,27 @@ router.get("/findByStatus",async (req,res,next)=>{
     }
 });
 
+router.get("/", async(req,res,next)=>{
+    try {
+        let pets = await Pet.findAll({include: [Tag, Photo]})
+        res.send(pets)
+    } catch (error) {
+        next(error)
+    }
+})
+
+
 router.get("/:id",async (req,res, next)=>{
     const {id} = req.params;
 
     try {
         let pet = await Pet.findOne({where:{id}})
-        if(pet) return res.send(pet)
+        if(pet) {
+            let images = await pet.getPhotos()
+            let tags = await pet.getTags()
+            tags = tags.map(e=>e.name)
+            return res.send({pet,images, tags})
+        }
         res.status(404).send({msg:"Not found"})
     } catch (error) {
         next(error)
